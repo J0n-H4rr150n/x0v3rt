@@ -1,0 +1,9 @@
+Third-Party Notices
+
+This project bundles third-party components. Licenses are provided below or in the referenced files.
+
+1. Hack Typeface
+   License: MIT
+   Copyright (c) 2018 Source Foundry Authors
+   License file: LICENSES/Hack.txt
+   Source: https://github.com/source-foundry/Hack

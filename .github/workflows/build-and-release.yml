@@ -1,0 +1,181 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag (e.g., v1.0.0) - must match existing git tag"
+        required: true
+        type: string
+      create_release:
+        description: "Create GitHub release with artifacts"
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build renderer
+        run: npm run build
+
+      - name: Ensure macOS icon size
+        if: matrix.os == 'macos-latest'
+        run: |
+          if [ -f build/icon.png ]; then
+            sips -z 512 512 build/icon.png
+          fi
+
+      - name: Build Electron app
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+        shell: bash
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            npx electron-builder --win --publish never
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            npx electron-builder --mac --publish never
+          else
+            npx electron-builder --linux --publish never
+          fi
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          path: dist/**
+          retention-days: 7
+
+  release:
+    needs: build
+    if: inputs.create_release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+
+      - name: Display structure
+        run: ls -R release-artifacts
+
+      - name: Check GitHub API rate limit
+        run: |
+          echo "Checking API rate limit before release..."
+          RATE_INFO=$(curl -s -H "Authorization: token ${{ github.token }}" \
+            https://api.github.com/rate_limit)
+          REMAINING=$(echo "$RATE_INFO" | jq -r '.rate.remaining')
+          LIMIT=$(echo "$RATE_INFO" | jq -r '.rate.limit')
+
+          echo "Rate limit: $REMAINING/$LIMIT remaining"
+
+          if [ "$REMAINING" -lt 100 ]; then
+            echo "⚠️  WARNING: Low rate limit ($REMAINING remaining)"
+            echo "Consider waiting before creating release"
+          fi
+
+      - name: Prepare consolidated release assets
+        run: |
+          mkdir -p final-release
+          cd release-artifacts
+
+          echo "📦 Consolidating artifacts into platform archives..."
+
+          # Linux artifacts
+          if [ -d "dist-ubuntu-latest" ]; then
+            echo "  → Packaging Linux artifacts..."
+            tar -czf ../final-release/x0v3rt-linux-x64.tar.gz -C dist-ubuntu-latest .
+
+            # Also extract individual installers for convenience
+            if [ -f dist-ubuntu-latest/*.AppImage ]; then
+              cp dist-ubuntu-latest/*.AppImage ../final-release/ 2>/dev/null || true
+            fi
+            if [ -f dist-ubuntu-latest/*.deb ]; then
+              cp dist-ubuntu-latest/*.deb ../final-release/ 2>/dev/null || true
+            fi
+          fi
+
+          # Windows artifacts
+          if [ -d "dist-windows-latest" ]; then
+            echo "  → Packaging Windows artifacts..."
+            (cd dist-windows-latest && zip -r ../../final-release/x0v3rt-windows-x64.zip . -x "*.blockmap" -x "*.yaml")
+
+            # Also copy installer executable
+            if [ -f dist-windows-latest/*.exe ]; then
+              cp dist-windows-latest/*.exe ../final-release/ 2>/dev/null || true
+            fi
+          fi
+
+          # macOS artifacts
+          if [ -d "dist-macos-latest" ]; then
+            echo "  → Packaging macOS artifacts..."
+            (cd dist-macos-latest && zip -r ../../final-release/x0v3rt-macos-universal.zip . -x "*.blockmap" -x "*.yaml")
+
+            # Also copy DMG files
+            if [ -f dist-macos-latest/*.dmg ]; then
+              cp dist-macos-latest/*.dmg ../final-release/ 2>/dev/null || true
+            fi
+          fi
+
+          cd ..
+          echo ""
+          echo "✅ Release assets prepared:"
+          ls -lh final-release/
+          echo ""
+          echo "Total files to upload: $(ls final-release/ | wc -l)"
+
+      - name: Create GitHub Release with retry
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 30
+          warning_on_retry: true
+          command: |
+            echo "🚀 Creating release ${{ inputs.version }}..."
+
+            # Use GitHub CLI for better control and error handling
+            gh release create "${{ inputs.version }}" \
+              --repo "${{ github.repository }}" \
+              --title "${{ inputs.version }}" \
+              --generate-notes \
+              --verify-tag \
+              final-release/*
+
+            echo "✅ Release created successfully!"
+            echo "🔗 View at: https://github.com/${{ github.repository }}/releases/tag/${{ inputs.version }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Upload release summary
+        if: success()
+        run: |
+          echo "## Release Published 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Assets:** $(ls final-release/ | wc -l) files" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Assets Published:" >> $GITHUB_STEP_SUMMARY
+          ls -lh final-release/ | tail -n +2 | awk '{print "- " $9 " (" $5 ")"}' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[View Release →](https://github.com/${{ github.repository }}/releases/tag/${{ inputs.version }})" >> $GITHUB_STEP_SUMMARY

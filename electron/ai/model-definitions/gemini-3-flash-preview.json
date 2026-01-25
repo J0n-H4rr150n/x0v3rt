@@ -1,0 +1,19 @@
+{
+  "model_id": "gemini-3-flash-preview",
+  "location": "global",
+  "type": "google-preview",
+  "status": "enabled",
+  "test_status": "disabled",
+  "test_result": "passed",
+  "temperature": 1.0,
+  "top_p": 0.95,
+  "top_k": 40,
+  "max_tokens": 8192,
+  "supports_vision": true,
+  "vision_test_status": "enabled",
+  "vision_test_result": "passed",
+  "test_elapsed_ms": 3839,
+  "last_test_time": "2026-01-10T10:33:20.577349",
+  "vision_test_elapsed_ms": 10402,
+  "vision_test_image_uri": "gs://generativeai-downloads/images/scones.jpg"
+}

@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+**/dist/
+*.tsbuildinfo
+.vite/
+**/.vite/
+
+# Environment
+.env
+.env.local
+.env.*
+!.env.example
+
+# GCP Credentials / secrets
+vertex-executor-key.json
+*.pem
+*.key
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Electron
+out/
+
+# Misc
+.assets/
+.notes/
+.db/
+.x0v3rt/
+.implementation/
+.planning/
+.examples/
+.docs/
+.references/
+.cache/
