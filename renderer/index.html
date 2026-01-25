@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: file:">
+  <title>x0v3rt</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/dialog.css">
+  <link rel="stylesheet" href="styles/codemirror-extensions.css">
+  <link rel="stylesheet" href="styles/search.css">
+  <link rel="stylesheet" href="styles/extensions.css">
+  <link rel="stylesheet" href="styles/preferences.css">
+  <link rel="stylesheet" href="../node_modules/@xterm/xterm/css/xterm.css">
+</head>
+
+<body class="dark-theme">
+
+  <header class="top-toolbar">
+    <div class="top-toolbar-left">
+      <span class="app-title">x0v3rt</span>
+    </div>
+    <div class="top-toolbar-center">
+      <input id="command-center" class="top-toolbar-input" type="text" placeholder="Search (Ctrl+P)" />
+    </div>
+    <div class="top-toolbar-right">
+      <button id="top-toggle-left" class="top-toolbar-btn" title="Toggle Explorer">⟨</button>
+      <button id="top-toggle-terminal" class="top-toolbar-btn" title="Toggle Terminal">▭</button>
+      <button id="top-toggle-right" class="top-toolbar-btn" title="Toggle AI Panel">⟩</button>
+    </div>
+  </header>
+
+  <!-- Main Application Layout -->
+  <div class="app-container">
+
+    <nav class="activity-bar">
+      <button id="activity-explorer" class="activity-btn active" title="Explorer">📁</button>
+      <button id="activity-extensions" class="activity-btn" title="Extensions">🧩</button>
+    </nav>
+
+    <!-- Left Sidebar - File Tree -->
+    <!-- File Tree -->
+    <aside id="explorer-sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <button id="workspace-title" class="sidebar-title" type="button"
+          title="Open folder in file explorer">Notes</button>
+        <div class="sidebar-actions">
+          <button id="new-note-btn" class="icon-btn" title="Add">
+            <span>+</span>
+          </button>
+          <div id="explorer-add-menu" class="explorer-add-menu hidden">
+            <button id="explorer-add-note" class="explorer-add-item" type="button">Add Note</button>
+            <button id="explorer-add-folder" class="explorer-add-item" type="button">Add Folder</button>
+          </div>
+          <button id="explorer-settings-toggle" class="icon-btn" title="Explorer Settings">⚙️</button>
+        </div>
+      </div>
+      <div id="explorer-settings-panel" class="explorer-settings-panel hidden">
+        <div class="explorer-settings-title">Settings</div>
+        <label class="explorer-settings-row">
+          <span>Show hidden</span>
+          <span class="toggle-switch">
+            <input id="explorer-show-hidden" type="checkbox" />
+            <span class="slider"></span>
+          </span>
+        </label>
+      </div>
+      <div class="sidebar-search">
+        <input id="file-search" class="sidebar-search-input" type="text" placeholder="Search files" />
+      </div>
+      <div id="file-tree" class="file-tree">
+        <!-- File tree will be populated here -->
+      </div>
+    </aside>
+
+    <!-- Extensions Sidebar (Hidden by default) -->
+    <aside id="extensions-sidebar" class="sidebar extensions-sidebar hidden">
+      <div class="sidebar-header">
+        <span class="sidebar-title">Extensions</span>
+      </div>
+      <div id="extensions-container" class="extensions-container">
+        <!-- Extensions list will be populated here -->
+      </div>
+    </aside>
+
+    <div id="left-resizer" class="sidebar-resizer" data-side="left"></div>
+
+    <!-- Center - Editor -->
+    <main class="editor-container">
+      <div class="editor-header">
+        <span id="current-file" class="current-file">No file open</span>
+        <div class="editor-actions">
+          <button id="preview-btn" class="btn-secondary">Preview: On</button>
+          <button id="wrap-btn" class="btn-secondary">Wrap: Off</button>
+          <button id="undo-btn" class="btn-secondary" disabled>Undo Save</button>
+          <button id="save-btn" class="btn-secondary" disabled>Save</button>
+        </div>
+      </div>
+      <div id="editor-tabs" class="editor-tabs"></div>
+      <div id="editor" class="editor"></div>
+      <div id="image-viewer" class="image-viewer hidden">
+        <img id="image-preview" class="image-preview" alt="Image preview" />
+      </div>
+
+      <div id="extensions-main-view" class="main-view extensions-main-view hidden">
+        <div class="extensions-main-header">
+          <h2 id="extensions-main-title" class="extensions-main-title">Extensions</h2>
+        </div>
+        <div id="extensions-main-content" class="extensions-main-content"></div>
+      </div>
+
+      <!-- Terminal Panel (VS Code-style) -->
+      <div id="terminal-panel" class="terminal-panel hidden">
+        <div id="terminal-resizer" class="terminal-resizer"></div>
+        <div class="terminal-header">
+          <span class="terminal-title">Terminal</span>
+          <div class="terminal-actions">
+            <button id="terminal-new-btn" class="icon-btn small" title="New Terminal">+</button>
+            <button id="terminal-split-btn" class="icon-btn small" title="Split Terminal">▦</button>
+            <button id="terminal-min-btn" class="icon-btn small" title="Minimize Terminal">▁</button>
+            <button id="terminal-max-btn" class="icon-btn small" title="Maximize Terminal">▢</button>
+            <button id="terminal-hide-btn" class="icon-btn small" title="Hide Terminal">×</button>
+          </div>
+        </div>
+        <div class="terminal-split">
+          <div class="terminal-pane" data-pane="primary">
+            <div class="terminal-tabbar">
+              <div id="terminal-tabs-primary" class="terminal-tabs"></div>
+            </div>
+            <div id="terminal-content-primary" class="terminal-container"></div>
+          </div>
+          <div class="terminal-pane hidden" data-pane="secondary">
+            <div class="terminal-tabbar">
+              <div id="terminal-tabs-secondary" class="terminal-tabs"></div>
+            </div>
+            <div id="terminal-content-secondary" class="terminal-container"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="right-resizer" class="sidebar-resizer" data-side="right"></div>
+
+    <!-- Right Sidebar - AI Chat -->
+    <aside id="ai-sidebar" class="ai-sidebar">
+      <div class="ai-header">
+        <span class="ai-title">AI Assistant</span>
+        <div class="ai-header-actions">
+          <button id="new-chat-btn" class="icon-btn" title="New Chat">+</button>
+          <button id="ai-settings-toggle" class="icon-btn" title="Settings">⚙️</button>
+        </div>
+      </div>
+
+      <!-- AI Config Panel -->
+      <div id="ai-config-panel" class="ai-config hidden">
+        <div class="config-header">
+          <span class="config-title">Settings</span>
+          <button id="ai-config-close" class="icon-btn small" title="Close Settings">×</button>
+        </div>
+        <div class="config-group">
+          <label for="context-window">Context window (tokens):</label>
+          <input id="context-window" class="config-input" type="number" min="0" step="1" placeholder="Auto" />
+        </div>
+
+        <div class="config-group">
+          <label for="max-output-tokens">Max output tokens:</label>
+          <input id="max-output-tokens" class="config-input" type="number" min="1" step="1" placeholder="Auto" />
+        </div>
+
+        <div class="config-group">
+          <label for="temperature">Temperature:</label>
+          <input id="temperature" class="config-input" type="number" min="0" max="2" step="0.1" placeholder="0.7" />
+        </div>
+
+        <div class="config-group">
+          <label for="top-p">Top P:</label>
+          <input id="top-p" class="config-input" type="number" min="0" max="1" step="0.05" placeholder="0.95" />
+        </div>
+      </div>
+
+      <!-- Session List -->
+      <div id="chat-sessions" class="chat-sessions">
+        <!-- Session items will be populated here -->
+      </div>
+
+      <div class="chat-search-container">
+        <input id="chat-search" class="chat-search-input" type="text" placeholder="Search chat" />
+        <div id="chat-search-results" class="chat-search-results hidden"></div>
+      </div>
+
+      <!-- Chat Container -->
+      <div id="chat-messages" class="chat-messages">
+        <div class="chat-welcome">
+          <p>👋 AI Assistant ready</p>
+          <p class="chat-hint">Ask questions about your notes, get pentesting advice, or analyze findings.</p>
+        </div>
+      </div>
+
+      <!-- Chat Input -->
+      <div class="chat-input-container">
+        <textarea id="chat-input" class="chat-input" placeholder="Ask the AI..." rows="3"></textarea>
+        <div class="chat-send-row">
+          <select id="model-select" class="chat-model-select"></select>
+          <button id="chat-send" class="chat-send-btn icon" title="Send">➤</button>
+        </div>
+      </div>
+    </aside>
+
+    <nav class="activity-bar activity-bar-right">
+      <button id="activity-ai-right" class="activity-btn" title="AI Assistant">🤖</button>
+    </nav>
+
+  </div>
+
+  <!-- Dialogs and overlays loaded dynamically -->
+
+  <!-- Main app initialization moved to main.js -->
+  <script type="module" src="main.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,306 @@
+/* Preferences Dialog Styles */
+
+.preferences-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.preferences-dialog {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 700px;
+    max-width: 90vw;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.preferences-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.preferences-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.preferences-header .close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    transition: all 0.15s;
+}
+
+.preferences-header .close-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.preferences-body {
+    display: flex;
+    flex: 1;
+    min-height: 400px;
+    overflow: hidden;
+}
+
+.preferences-sidebar {
+    width: 180px;
+    border-right: 1px solid var(--border);
+    padding: 8px;
+    overflow-y: auto;
+}
+
+.preferences-tab {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    text-align: left;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+}
+
+.preferences-tab:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.preferences-tab.active {
+    background: var(--accent-bg);
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.preferences-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.preferences-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.preferences-footer button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.preferences-footer .btn-cancel {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+.preferences-footer .btn-cancel:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.preferences-footer .btn-save {
+    background: var(--accent);
+    border: none;
+    color: white;
+}
+
+.preferences-footer .btn-save:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.preferences-footer .btn-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Form Elements */
+.pref-section {
+    margin-bottom: 24px;
+}
+
+.pref-section:last-child {
+    margin-bottom: 0;
+}
+
+.pref-section h3 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.pref-field {
+    margin-bottom: 16px;
+}
+
+.pref-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.pref-field .field-description {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.pref-field input[type="text"],
+.pref-field input[type="number"],
+.pref-field input[type="password"],
+.pref-field select {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 13px;
+    transition: all 0.15s;
+}
+
+.pref-field input:focus,
+.pref-field select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-bg);
+}
+
+.pref-field input[type="range"] {
+    width: 100%;
+}
+
+.pref-field .button-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.pref-field button {
+    padding: 6px 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.pref-field button:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent);
+}
+
+.pref-field button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+.pref-field button.primary:hover {
+    background: var(--accent-hover);
+}
+
+/* Front Matter Rows */
+.front-matter-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr auto;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.front-matter-row input {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 6px 8px;
+    color: var(--text-primary);
+    font-size: 12px;
+}
+
+.front-matter-remove {
+    border: none;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    width: 28px;
+    cursor: pointer;
+}
+
+.front-matter-remove:hover {
+    color: var(--accent-danger);
+}
+/* Preview Box */
+.preview-box {
+    padding: 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-top: 12px;
+}
+
+.preview-box .preview-text {
+    font-family: var(--user-font-family, inherit);
+    font-size: var(--user-font-size, 14px);
+    line-height: var(--user-line-height, 1.5);
+}

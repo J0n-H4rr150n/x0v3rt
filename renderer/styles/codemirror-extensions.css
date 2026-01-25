@@ -1,0 +1,261 @@
+/* CodeMirror Base Overrides */
+.cm-editor {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.cm-content {
+    padding: var(--spacing-md);
+}
+
+.cm-scroller {
+    overflow: auto;
+}
+
+/* Markdown spacing improvements */
+.cm-line:has(.cm-header) {
+    margin-top: 0.4em;
+    margin-bottom: 0.2em;
+}
+
+.cm-line:has(.cm-list) {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* Collapse blank lines in live preview */
+.cm-preview-empty-line {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.cm-preview-empty-line br {
+    display: none !important;
+}
+
+/* Wiki links and URLs - brighter for better contrast */
+.cm-link,
+.cm-url {
+    color: #6eb5ff !important;
+    /* Bright blue */
+    text-decoration: underline;
+}
+
+.cm-link:hover {
+    color: #a0d2ff !important;
+    /* Even brighter on hover */
+}
+
+/* Headers with better spacing */
+.cm-header {
+    font-weight: bold;
+}
+
+/* Reduce emphasis for markdown formatting markers (#, *, etc.) */
+.cm-formatting,
+.cm-formatting-header {
+    color: var(--text-muted) !important;
+}
+
+.cm-editor .cm-formatting-header-1,
+.cm-editor .cm-formatting-header-2,
+.cm-editor .cm-formatting-header-3,
+.cm-editor .cm-formatting-header-4,
+.cm-editor .cm-formatting-header-5,
+.cm-editor .cm-formatting-header-6 {
+    color: var(--text-muted) !important;
+}
+
+.cm-editor .cm-header,
+.cm-editor .cm-header-1,
+.cm-editor .cm-header-2,
+.cm-editor .cm-header-3,
+.cm-editor .cm-header-4,
+.cm-editor .cm-header-5,
+.cm-editor .cm-header-6 {
+    color: var(--text-primary) !important;
+}
+
+.cm-header-1 {
+    font-size: 1.8em;
+    color: var(--text-primary);
+}
+
+.cm-header-2 {
+    font-size: 1.5em;
+    color: var(--accent-primary);
+}
+
+.cm-header-3 {
+    font-size: 1.3em;
+    color: var(--text-secondary);
+}
+
+/* Live Preview Styling */
+.cm-live-preview {
+    padding: 0;
+    margin: 0;
+    white-space: normal;
+}
+
+.cm-live-preview p {
+    margin: 0;
+    padding: 0;
+}
+
+.cm-live-preview h1,
+.cm-live-preview h2,
+.cm-live-preview h3 {
+    margin: 0;
+    padding: 0;
+}
+
+.cm-live-preview ul,
+.cm-live-preview ol {
+    margin: 0 !important;
+    padding: 0 0 0 1.5em !important;
+    list-style-position: outside !important;
+}
+
+.cm-live-preview li {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Code blocks in live preview - FIX VISIBILITY */
+.cm-live-preview pre {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin: 0.5em 0;
+    overflow-x: auto;
+    white-space: pre;
+}
+
+.cm-live-preview code {
+    color: #d4d4d4 !important;
+    font-family: var(--font-mono);
+    font-size: 13px;
+}
+
+.cm-front-matter-hidden {
+    display: none;
+}
+
+.cm-live-preview pre code {
+    color: inherit !important;
+    background: none !important;
+    padding: 0 !important;
+}
+
+/* Syntax highlighting for live preview */
+.cm-live-preview .hljs {
+    color: #d4d4d4 !important;
+    background: #1e1e1e !important;
+}
+
+.cm-live-preview .hljs-keyword {
+    color: #569cd6 !important;
+}
+
+.cm-live-preview .hljs-string {
+    color: #ce9178 !important;
+}
+
+.cm-live-preview .hljs-number {
+    color: #b5cea8 !important;
+}
+
+.cm-live-preview .hljs-comment {
+    color: #6a9955 !important;
+}
+
+.cm-live-preview .hljs-function {
+    color: #dcdcaa !important;
+}
+
+.cm-live-preview .hljs-variable {
+    color: #9cdcfe !important;
+}
+
+.cm-live-preview .hljs-built_in {
+    color: #4ec9b0 !important;
+}
+
+.cm-live-preview .hljs-title {
+    color: #dcdcaa !important;
+}
+
+.cm-live-preview .hljs-attr {
+    color: #9cdcfe !important;
+}
+
+.cm-live-preview .hljs-params {
+    color: #9cdcfe !important;
+}
+
+/* Code Block Copy Button - Obsidian Style */
+.cm-code-block-wrapper {
+    position: relative;
+    margin: 8px 0;
+}
+
+.cm-live-preview .cm-code-block-wrapper {
+    position: relative !important;
+}
+
+.cm-copy-code-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 6px 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.cm-live-preview .cm-copy-code-btn {
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+    z-index: 10 !important;
+    pointer-events: auto !important;
+    margin: 0 !important;
+}
+
+.cm-live-preview pre {
+    margin: 0 !important;
+}
+
+.cm-code-block-wrapper:hover .cm-copy-code-btn {
+    opacity: 1;
+}
+
+.cm-copy-code-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--accent-primary);
+}
+
+.cm-copy-code-btn svg {
+    display: block;
+}
+
+/* Code Folding Gutter Styling */
+.cm-foldGutter {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.cm-foldGutter:hover {
+    opacity: 1;
+}

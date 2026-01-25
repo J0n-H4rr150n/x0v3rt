@@ -1,0 +1,16 @@
+{
+  "model_id": "qwen/qwen3-coder-480b-a35b-instruct-maas",
+  "location": "us-south1",
+  "type": "google-maas",
+  "status": "enabled",
+  "test_status": "disabled",
+  "test_result": "passed",
+  "vision_test_result": "skipped",
+  "temperature": 0.7,
+  "top_p": 0.95,
+  "top_k": 40,
+  "max_tokens": 8192,
+  "vision_test_status": "enabled",
+  "test_elapsed_ms": 2206,
+  "last_test_time": "2026-01-10T10:28:27.803127"
+}
