@@ -37,6 +37,8 @@ Users are responsible for complying with all applicable laws, rules, and policie
 
 Think of it as **Obsidian meets VS Code meets a Security OS** — purpose-built for offensive security workflows.
 
+![x0v3rt app screenshot](docs/assets/x0v3rt_v0.1.0-alpha.1.png)
+
 ---
 
 ## ✨ Key Features
