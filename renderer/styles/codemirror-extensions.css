@@ -131,7 +131,9 @@
     padding: 12px;
     margin: 0.5em 0;
     overflow-x: auto;
-    white-space: pre;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .cm-live-preview code {
